@@ -1,0 +1,39 @@
+// /* Global styles */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+ 
+  
+//   /* Main container */
+  .main-container {
+    display: flex;
+    flex: 1; /* Take up remaining space */
+    background-color: #f9f9f9;
+  }
+  
+//   /* Router outlet (main content) */
+  router-outlet + * {
+    flex: 1; /* Take up remaining space */
+    // padding: 20px;
+    background-color: white;
+  }
+
+  /* Global styles */
+html {
+    height: 100%; /* Ensure html and body take up full height */
+    margin: 0; /* Remove default margin */
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* App root container */
+  app-root {
+    display: flex;
+    flex-direction: column;
+    flex: 1; /* Take up remaining space */
+  }

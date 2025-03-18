@@ -1,0 +1,22 @@
+<nav>
+  <ul>
+    <li [ngClass]="{ 'active-li': addRequirementLink.isActive }">
+      <a
+        routerLink="/add-requirement"
+        routerLinkActive="active"
+        #addRequirementLink="routerLinkActive"
+      >
+        Add Requirement
+      </a>
+    </li>
+    <li [ngClass]="{ 'active-li': searchRequirementLink.isActive }">
+      <a
+        routerLink="/search-requirement/skill-set-search"
+        routerLinkActive="active"
+        #searchRequirementLink="routerLinkActive"
+      >
+        Search Requirement
+      </a>
+    </li>
+  </ul>
+</nav>

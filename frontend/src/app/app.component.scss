@@ -1,0 +1,43 @@
+ /* Header */
+ app-header {
+    background-color: #2c3e50;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  /* Side menu */
+  app-side-menu {
+    width: 250px; /* Fixed width for the side menu */
+    background-color: #4c76a0;
+    color: white;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    overflow-y: auto; /* Make it scrollable if content exceeds height */
+  }
+  
+  /* Router outlet (main content) */
+  router-outlet + * {
+    flex: 1; /* Take up remaining space */
+    padding: 20px;
+    background-color: white;
+  }
+  
+  /* Footer */
+  app-footer {
+    background-color: #2c3e50;
+    color: white;
+    text-align: center;
+    padding: 10px 20px;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Responsive design */
+  @media (max-width: 768px) {
+    app-side-menu {
+      width: 200px; /* Reduce width for smaller screens */
+    }
+  
+    router-outlet + * {
+      padding: 15px; /* Reduce padding for smaller screens */
+    }
+  }

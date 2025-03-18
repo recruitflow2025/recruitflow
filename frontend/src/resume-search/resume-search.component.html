@@ -1,0 +1,30 @@
+<div class="tab-content">
+    <h3>Resume Search</h3>
+    <div class="search-box">
+      <input type="text" placeholder="Enter resume keywords..." />
+      <button type="submit">
+       Submit <!-- Font Awesome search icon -->
+      </button>
+    </div>
+    <!-- Add other content for Resume Search here -->
+    <table>
+        <thead>
+          <tr>
+            <th>S.No</th>
+            <th>File Name</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of resumeData; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ item.fileName }}</td>
+            <td>
+              <a href="#" (click)="viewFile(item.file)">
+                <i class="fas fa-eye"></i> <!-- View icon -->
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+  </div>

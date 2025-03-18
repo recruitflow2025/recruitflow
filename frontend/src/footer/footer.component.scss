@@ -1,0 +1,14 @@
+/* Footer container */
+:host {
+    display: block;
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px 20px;
+  }
+  
+  /* Footer text */
+  p {
+    margin: 0;
+    font-size: 14px;
+  }
