@@ -3,75 +3,177 @@
   }
   
   h3 {
-    color: #333;
+    color: var(--secondary);
     margin-bottom: 20px;
+    position: relative;
+    display: inline-block;
+    
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -5px;
+      width: 40px;
+      height: 3px;
+      background-color: var(--primary);
+      border-radius: 3px;
+    }
   }
   
   /* Search box */
   .search-box {
     display: flex;
     align-items: center;
-    margin-bottom: 20px;
-    gap: 5px;
+    margin-bottom: 25px;
+    gap: 8px;
   }
   
   .search-box input {
     flex: 1;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px 0 0 4px;
+    padding: 14px 16px;
+    border: 1px solid var(--gray-300);
+    border-radius: var(--border-radius) 0 0 var(--border-radius);
     font-size: 16px;
     outline: none;
-    transition: border-color 0.3s ease;
+    transition: var(--transition);
+    background-color: var(--gray-100);
   }
   
   .search-box input:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    background-color: white;
   }
   
   .search-box button {
-    padding: 10px 20px;
-    background-color: #007bff;
+    padding: 14px 20px;
+    background-color: var(--primary);
     color: white;
     border: none;
-    border-radius: 0 4px 4px 0;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    
+    &:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+    
+    &::before {
+      content: "\f002"; /* Font Awesome search icon */
+      font-family: "Font Awesome 5 Free";
+      font-weight: 900;
+    }
   }
   
-  .search-box button:hover {
-    background-color: #0056b3;
-  }
   /* Table styles */
-table {
+  table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     margin-top: 20px;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--box-shadow-sm);
   }
   
   table th,
   table td {
-    padding: 12px;
+    padding: 16px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
   }
   
   table th {
-    background-color: #007bff;
+    background-color: var(--primary);
     color: white;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+  }
+  
+  table tr {
+    background-color: white;
+    transition: background-color 0.3s ease;
+  }
+  
+  table tr:nth-child(even) {
+    background-color: var(--gray-100);
   }
   
   table tr:hover {
-    background-color: #f1f1f1;
+    background-color: rgba(52, 152, 219, 0.05);
+  }
+  
+  table td {
+    border-bottom: 1px solid var(--gray-200);
   }
   
   /* View icon */
   .fa-eye {
-    color: #007bff;
+    color: var(--primary);
     cursor: pointer;
+    transition: var(--transition);
+    font-size: 18px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: rgba(52, 152, 219, 0.1);
   }
   
   .fa-eye:hover {
-    color: #0056b3;
+    color: white;
+    background-color: var(--primary);
+    transform: scale(1.1);
+  }
+  
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .search-box {
+      flex-direction: column;
+    }
+    
+    .search-box input,
+    .search-box button {
+      width: 100%;
+      border-radius: var(--border-radius);
+    }
+    
+    table {
+      display: block;
+      overflow-x: auto;
+    }
+    
+    table th,
+    table td {
+      padding: 12px;
+      min-width: 120px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .tab-content {
+      padding: 15px 10px;
+    }
+    
+    h3 {
+      font-size: 18px;
+    }
+    
+    .search-box input {
+      padding: 10px 12px;
+      font-size: 14px;
+    }
+    
+    .search-box button {
+      padding: 10px 15px;
+      font-size: 14px;
+    }
   }

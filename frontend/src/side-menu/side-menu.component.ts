@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ElementRef } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
@@ -10,5 +10,10 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   styleUrl: './side-menu.component.scss'
 })
 export class SideMenuComponent {
+  constructor(private elementRef: ElementRef) {}
 
+  toggleSidebar() {
+    const hostElement = this.elementRef.nativeElement;
+    hostElement.classList.toggle('open');
+  }
 }

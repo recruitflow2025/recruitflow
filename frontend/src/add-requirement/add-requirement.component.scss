@@ -1,92 +1,246 @@
 /* Form container */
 form {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  max-width: 650px;
+  margin: 30px auto;
+  padding: 35px 40px;
+  background-color: white;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--box-shadow);
+  transition: var(--transition);
+  
+  &:hover {
+    box-shadow: var(--box-shadow-lg);
+    transform: translateY(-2px);
+  }
+}
+
+/* Form title */
+.form-title {
+  text-align: center;
+  margin-bottom: 30px;
+  color: var(--secondary);
+  font-size: 28px;
+  font-weight: 600;
+  position: relative;
+  padding-bottom: 15px;
+  
+  &::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background-color: var(--primary);
+    border-radius: 3px;
+  }
+}
+
+/* Form sections */
+.form-section {
+  margin-bottom: 25px;
+  padding: 15px;
+}
+
+/* Form labels */
+label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 500;
+  color: var(--secondary);
+  font-size: 16px;
+  transition: var(--transition);
+  
+  &::after {
+    content: " *";
+    color: var(--accent);
+    font-weight: bold;
+  }
+}
+
+/* Optional fields */
+label[for="middleName"]::after {
+  content: "";
+}
+
+/* Input fields and textarea */
+input,
+textarea {
+  width: 100%;
+  padding: 14px 16px;
+  margin-bottom: 6px;
+  border: 1px solid var(--gray-300);
+  border-radius: var(--border-radius);
+  font-size: 16px;
+  outline: none;
+  transition: var(--transition);
+  background-color: var(--gray-100);
+  color: var(--gray-700);
+  
+  &:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    background-color: white;
   }
   
-  /* Form labels */
+  &::placeholder {
+    color: var(--gray-500);
+  }
+}
+
+/* Textarea specific styles */
+textarea {
+  resize: vertical; 
+  min-height: 120px;
+  line-height: 1.5;
+}
+
+/* File upload input styling */
+input[type="file"] {
+  padding: 12px;
+  background-color: var(--gray-100);
+  border: 2px dashed var(--gray-300);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: var(--transition);
+  
+  &:hover {
+    border-color: var(--primary);
+    background-color: rgba(52, 152, 219, 0.05);
+  }
+  
+  &:focus {
+    border-color: var(--primary);
+    background-color: white;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+  }
+}
+
+/* Custom file upload button */
+input[type="file"]::-webkit-file-upload-button {
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  margin-right: 16px;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+  
+  &:hover {
+    background-color: var(--primary-dark);
+  }
+}
+
+/* Error state for inputs */
+input.ng-invalid.ng-touched,
+textarea.ng-invalid.ng-touched {
+  border-color: var(--danger);
+  background-color: rgba(231, 76, 60, 0.03);
+}
+
+/* Error messages */
+.error-message {
+  color: var(--danger);
+  font-size: 12px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  animation: fadeIn 0.3s ease;
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Submit button */
+button[type="submit"] {
+  width: 100%;
+  padding: 16px;
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  margin-top: 10px;
+  
+  &:hover:not(:disabled) {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+  }
+  
+  &:disabled {
+    background-color: var(--gray-400);
+    cursor: not-allowed;
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  form {
+    padding: 25px 20px;
+    margin: 20px 15px;
+  }
+  
+  .form-title {
+    font-size: 24px;
+  }
+  
   label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 500;
-    color: #333;
+    font-size: 15px;
   }
   
-  /* Input fields and textarea */
   input,
   textarea {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 16px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 16px;
-    outline: none;
-    transition: border-color 0.3s ease;
-  
-    &:focus {
-      border-color: #007bff;
-      box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-    }
+    padding: 12px 14px;
+    font-size: 15px;
   }
   
-  /* Textarea specific styles */
-  textarea {
-    resize: vertical; /* Allow vertical resizing */
-    min-height: 100px;
+  input[type="file"]::-webkit-file-upload-button {
+    padding: 8px 12px;
   }
   
-  /* Submit button */
   button[type="submit"] {
-    width: 100%;
-    padding: 12px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
+    padding: 14px;
     font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  
-    &:hover {
-      background-color: #0056b3;
-    }
-  
-    &:disabled {
-      background-color: #cccccc;
-      cursor: not-allowed;
-    }
+  }
+}
+
+@media (max-width: 480px) {
+  form {
+    padding: 20px 15px;
   }
   
-  /* Error messages */
-  .ng-invalid.ng-touched {
-    border-color: #ff0000;
+  .form-title {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+  
+  label {
+    font-size: 14px;
+  }
+  
+  input,
+  textarea {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+  
+  .form-section {
+    padding: 15px;
+  }
+  
+  button[type="submit"] {
+    padding: 12px;
+    font-size: 15px;
   }
   
   .error-message {
-    color: #ff0000;
-    font-size: 14px;
-    margin-top: -10px;
-    margin-bottom: 10px;
+    font-size: 12px;
   }
-  
-  /* Responsive design */
-  @media (max-width: 768px) {
-    form {
-      padding: 15px;
-    }
-  
-    input,
-    textarea {
-      font-size: 14px;
-    }
-  
-    button[type="submit"] {
-      font-size: 14px;
-      padding: 10px;
-    }
-  }
+}

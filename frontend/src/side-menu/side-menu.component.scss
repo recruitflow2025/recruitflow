@@ -1,39 +1,158 @@
 :host {
   display: block;
-  background-color: #2c3e50;
+  width: 250px;
+  background: linear-gradient(to bottom, var(--secondary), var(--primary-dark) 120%);
   color: white;
   height: 100%;
+  box-shadow: var(--box-shadow);
+  transition: var(--transition);
+  z-index: 990;
+  overflow-y: auto;
 }
 
+/* Navigation container */
+nav {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 25px 0;
+}
+
+/* App title/logo */
+nav::before {
+  content: none;
+  display: block;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  color: white;
+  padding: 20px 0 30px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  letter-spacing: 0.5px;
+}
+
+/* Menu list */
 ul {
-  list-style-type: none;
+  list-style: none;
   padding: 0;
   margin: 0;
 }
 
 li {
-  padding: 12px 20px;
-  border-bottom: 1px solid #34495e;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+  margin-bottom: 5px;
+  position: relative;
 }
 
-li:hover {
-  background-color: #34495e;
+/* Active menu item */
+li.active-li {
+  background-color: rgba(255, 255, 255, 0.15);
 }
 
+li.active-li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 3px;
+  background-color: var(--accent);
+}
+
+/* Menu links */
 a {
+  display: flex;
+  align-items: center;
+  padding: 14px 20px;
   color: white;
   text-decoration: none;
-  display: block;
+  transition: var(--transition);
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  opacity: 0.85;
 }
 
-// a.active {
-//   background-color: #1abc9c;
-//   font-weight: bold;
-// }
+a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  opacity: 1;
+}
 
-/* Highlight the <li> when the <a> is active */
-li.active-li {
-  background-color: #6668f7;
+a.active {
+  opacity: 1;
+  font-weight: 600;
+}
+
+/* Icon placeholders */
+li a::before {
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  margin-right: 12px;
+  font-size: 16px;
+  width: 20px;
+  text-align: center;
+  display: inline-block;
+}
+
+/* Specific icons */
+li:nth-child(1) a::before {
+  content: "\f067"; /* Plus icon for Add */
+}
+
+li:nth-child(2) a::before {
+  content: "\f002"; /* Search icon */
+}
+
+/* Mobile toggle button */
+.sidebar-toggle {
+  display: none;
+  position: fixed;
+  top: 70px;
+  left: 10px;
+  z-index: 1001;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  line-height: 40px;
+  cursor: pointer;
+  box-shadow: var(--box-shadow-sm);
+}
+
+/* Responsive design */
+@media (max-width: 992px) {
+  :host {
+    position: fixed;
+    top: 60px; /* Match header height */
+    left: -250px;
+    height: calc(100vh - 60px);
+    transition: left 0.3s ease;
+  }
+  
+  :host.open {
+    left: 0;
+  }
+  
+  .sidebar-toggle {
+    display: block;
+  }
+}
+
+@media (max-width: 768px) {
+  nav::before {
+    font-size: 20px;
+    padding: 15px 0 20px;
+  }
+  
+  a {
+    padding: 12px 15px;
+    font-size: 14px;
+  }
+  
+  li a::before {
+    font-size: 14px;
+    width: 18px;
+  }
 }

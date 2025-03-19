@@ -1,43 +1,60 @@
- /* Header */
- app-header {
-    background-color: #2c3e50;
-    color: white;
-    padding: 10px 20px;
-    text-align: center;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+/* Main container */
+.main-container {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.content-wrapper {
+  display: flex;
+  flex: 1;
+  position: relative;
+}
+
+/* Router outlet (main content) */
+.content-area {
+  flex: 1;
+  margin-left: 250px; /* Match side menu width */
+  background-color: var(--gray-100);
+  padding: var(--space-xl);
+  transition: var(--transition);
+  min-height: calc(100vh - 120px); /* Account for header and footer */
+}
+
+/* Component styling overrides */
+app-header {
+  z-index: 1000;
+  position: sticky;
+  top: 0;
+  width: 100%;
+}
+
+app-side-menu {
+  position: fixed;
+  top: 60px; /* Match header height */
+  left: 0;
+  height: calc(100vh - 60px); /* Full height minus header */
+  width: 250px;
+  transition: var(--transition);
+  z-index: 990;
+}
+
+app-footer {
+  z-index: 990;
+}
+
+/* Responsive design */
+@media (max-width: 992px) {
+  .content-area {
+    margin-left: 0;
+    padding: var(--space-lg);
   }
-  /* Side menu */
-  app-side-menu {
-    width: 250px; /* Fixed width for the side menu */
-    background-color: #4c76a0;
-    color: white;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-    overflow-y: auto; /* Make it scrollable if content exceeds height */
+}
+
+@media (max-width: 768px) {
+  .content-area {
+    padding: var(--space-md);
   }
-  
-  /* Router outlet (main content) */
-  router-outlet + * {
-    flex: 1; /* Take up remaining space */
-    padding: 20px;
-    background-color: white;
-  }
-  
-  /* Footer */
-  app-footer {
-    background-color: #2c3e50;
-    color: white;
-    text-align: center;
-    padding: 10px 20px;
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Responsive design */
-  @media (max-width: 768px) {
-    app-side-menu {
-      width: 200px; /* Reduce width for smaller screens */
-    }
-  
-    router-outlet + * {
-      padding: 15px; /* Reduce padding for smaller screens */
-    }
-  }
+}
+
+/* Remove duplicate styles for app-header, app-side-menu, app-footer */
