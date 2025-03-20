@@ -1,30 +1,58 @@
 <div class="tab-content">
-    <h3>Resume Search</h3>
-    <div class="search-box">
-      <input type="text" placeholder="Enter resume keywords..." />
-      <button type="submit">
-       Submit <!-- Font Awesome search icon -->
-      </button>
-    </div>
-    <!-- Add other content for Resume Search here -->
-    <table>
-        <thead>
-          <tr>
-            <th>S.No</th>
-            <th>File Name</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let item of resumeData; let i = index">
-            <td>{{ i + 1 }}</td>
-            <td>{{ item.fileName }}</td>
-            <td>
-              <a href="#" (click)="viewFile(item.file)">
-                <i class="fas fa-eye"></i> <!-- View icon -->
-              </a>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+  <h3>Resume Search</h3>
+  <div class="search-box">
+    <input type="text" [(ngModel)]="keyword" placeholder="Enter resume keywords..." />
+    <button type="submit" (click)="onSearch()">Submit</button>
   </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>S.No</th>
+        <th>File Name</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of foundFiles; let i = index">
+        <td>{{ (pagination.page - 1) * pagination.pageSize + i + 1 }}</td> <!-- Correct index based on current page -->
+        <td>{{ item }}</td>
+        <td (click)="viewResume(item)">
+          <i class="fas fa-eye"></i>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p *ngIf="foundFiles.length === 0">No results found.</p>
+
+  <!-- Pagination Controls -->
+  <div class="pagination">
+    <button (click)="onPageChange(pagination.page - 1)" [disabled]="pagination.page === 1">Previous</button>
+    <span>Page {{ pagination.page }} of {{ pagination.totalPages }}</span>
+    <button (click)="onPageChange(pagination.page + 1)" [disabled]="pagination.page === pagination.totalPages">Next</button>
+  </div>
+
+  <!-- Modal for displaying resumes -->
+  <div #resumeModal class="modal fade" id="resumeModal" tabindex="-1" aria-labelledby="resumeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="resumeModalLabel">Resume</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div *ngIf="selectedResumeUrl && selectedResumeUrl.endsWith('.pdf')">
+            <iframe [src]="getSafeUrl(selectedResumeUrl)" width="100%" height="400px"></iframe>
+          </div>
+          <div *ngIf="selectedResumeHtml" style="width: 100%; height: 400px; overflow-y: auto;">
+            <div [innerHTML]="selectedResumeHtml"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

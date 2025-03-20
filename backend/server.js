@@ -5,6 +5,8 @@ const cors = require('cors');
 const path = require('path');
 const multer = require('multer'); // For file uploads
 const fs = require('fs'); // For creating the uploads directory
+const pdf = require('pdf-parse'); // PDF text extraction
+const mammoth = require('mammoth'); // DOCX text extraction
 
 const app = express();
 const port = 3000;
@@ -21,7 +23,6 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // MySQL Connection
 const db = mysql.createConnection({
   host: 'localhost',
-  port: 3306,
   user: 'root', // default XAMPP username
   password: '', // default XAMPP password
   database: 'recruitflow' // replace with your database name
@@ -50,6 +51,103 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
+async function searchInFile(filePath, keywords) {
+  try {
+    const fileExtension = path.extname(filePath).toLowerCase();
+    let fileText = '';
+
+    // Extract text based on file type (PDF or DOCX)
+    if (fileExtension === '.pdf') {
+      fileText = await extractTextFromPDF(filePath);
+    }
+
+    if (fileExtension === '.docx') {
+      fileText = await extractTextFromDOCX(filePath);
+    }
+    if (fileExtension === '.doc') {
+      return false;
+    }
+
+    // Convert file text to lowercase for case-insensitive search
+    fileText = fileText.toLowerCase();
+
+    // Convert all keywords to lowercase and check if each keyword exists in the file text
+    return keywords.every(keyword => fileText.includes(keyword.toLowerCase()));
+  } catch (error) {
+    console.error(`Error searching in file: ${filePath}`, error);
+    return false;
+  }
+}
+
+async function extractTextFromPDF(filePath) {
+  const fs = require('fs');
+  const pdfParse = require('pdf-parse');
+  const data = fs.readFileSync(filePath);
+  const pdf = await pdfParse(data);
+  return pdf.text;  // Return the text content of the PDF
+}
+
+async function extractTextFromDOCX(filePath) {
+  const fs = require('fs');
+  const mammoth = require('mammoth');
+  const buffer = fs.readFileSync(filePath);
+  const result = await mammoth.extractRawText({ buffer });
+  return result.value;  // Return the text content of the DOCX
+}
+
+app.post('/search-files', async (req, res) => {
+  const { keywords, page = 1, pageSize = 10 } = req.body;
+  const keywordList = keywords ? keywords.split(',').map(keyword => keyword.trim()) : [];
+
+  if (keywordList.length === 0) {
+    return res.status(400).json({ message: 'At least one keyword is required' });
+  }
+
+  const uploadDir = './uploads';
+  const files = fs.readdirSync(uploadDir);
+
+  const offset = (page - 1) * pageSize;
+  const foundFiles = [];
+  let filesFound = 0;
+
+  // Loop through all files
+  for (let file of files) {
+    const filePath = path.join(uploadDir, file);
+    const isFile = fs.lstatSync(filePath).isFile();
+
+    if (isFile && (filePath.endsWith('.pdf') || filePath.endsWith('.docx'))) {
+      // Check if the file contains all the keywords (case-insensitive)
+      const found = await searchInFile(filePath, keywordList);
+
+      if (found) {
+        foundFiles.push(filePath);
+        filesFound++;
+      }
+    }
+
+    if (filesFound >= pageSize) {
+      break;
+    }
+  }
+
+  // Calculate total files found (before pagination)
+  const totalFiles = foundFiles.length;
+  const totalPages = Math.ceil(totalFiles / pageSize);
+
+  // Apply offset to the found files (pagination)
+  const paginatedFiles = foundFiles.slice(offset, offset + pageSize);
+
+  res.json({
+    data: paginatedFiles,
+    pagination: {
+      page: parseInt(page),
+      pageSize: parseInt(pageSize),
+      total: totalFiles,
+      totalPages,
+    },
+  });
+});
+
 
 // Login API
 app.post('/login', (req, res) => {

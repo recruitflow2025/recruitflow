@@ -1,11 +1,12 @@
 declare var bootstrap: any;
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, ViewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef,ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SubmissionService } from '../search-requirement/submission.service';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import * as mammoth from 'mammoth';
 import { DomSanitizer } from '@angular/platform-browser';
+import { LoaderService } from '../common/loader.service';
 
 @Component({
   selector: 'app-skill-set-search',
@@ -16,7 +17,7 @@ import { DomSanitizer } from '@angular/platform-browser';
   styleUrl: './skill-set-search.component.scss'
 })
 export class SkillSetSearchComponent {
-  @ViewChild('resumeModal') resumeModal!: ElementRef;
+  @ViewChild('resumeModal') resumeModal!: ElementRef;   
   filterKeyword = '';
   submissions: any[] = [];
   selectedResumeHtml: string | null = null;
@@ -29,12 +30,13 @@ export class SkillSetSearchComponent {
     totalPages: 0,
   };
 
-  constructor(private submissionService: SubmissionService,private sanitizer: DomSanitizer) {
+  constructor(private submissionService: SubmissionService,private sanitizer: DomSanitizer,private loaderService: LoaderService) {
     this.fetchSubmissions(); // Fetch all records by default
   }
 
   // Fetch submissions with optional filter and pagination
   fetchSubmissions() {
+    this.loaderService.showLoader();
     this.submissionService
       .getSubmissions(this.filterKeyword, this.pagination.page, this.pagination.pageSize)
       .subscribe(
@@ -42,8 +44,11 @@ export class SkillSetSearchComponent {
           this.submissions = response.data;
           this.pagination = response.pagination;
           this.isFiltered = !!this.filterKeyword;
+          
+    this.loaderService.hideLoader();
         },
         (error) => {
+          this.loaderService.hideLoader();
           console.error('Error fetching submissions:', error);
           this.submissions = [];
           this.isFiltered = true;

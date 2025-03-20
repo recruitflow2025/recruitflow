@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms'; // Add ReactiveFormsModule
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common'; // Import CommonModule if needed
+import { LoaderService } from '../common/loader.service';
 
 @Component({
   selector: 'app-add-requirement',
@@ -12,8 +13,7 @@ import { CommonModule } from '@angular/common'; // Import CommonModule if needed
 })
 export class AddRequirementComponent {
   requirementForm: FormGroup;
-
-  constructor(private fb: FormBuilder, private http: HttpClient) {
+  constructor(private fb: FormBuilder, private http: HttpClient,private loaderService: LoaderService) {
     this.requirementForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
@@ -41,6 +41,7 @@ export class AddRequirementComponent {
 
   onSubmit() {
     if (this.requirementForm.valid) {
+      this.loaderService.showLoader();
       const formData = new FormData();
 
       // Append form data
@@ -63,6 +64,8 @@ export class AddRequirementComponent {
       this.http.post('http://localhost:3000/add_submission', formData)
         .subscribe(
           (response) => {
+            
+      this.loaderService.hideLoader();
             console.log('Data saved successfully', response);
             alert('Data saved successfully');
 
@@ -76,6 +79,8 @@ export class AddRequirementComponent {
             }
           },
           (error) => {
+            
+      this.loaderService.hideLoader();
             console.error('Error saving data', error);
             alert('Error saving data');
           }

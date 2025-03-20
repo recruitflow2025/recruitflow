@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from '../header/header.component';
@@ -6,6 +6,8 @@ import { FooterComponent } from '../footer/footer.component';
 import { SideMenuComponent } from '../side-menu/side-menu.component';
 import { StorageService } from '../common/storage.service'
 import { filter, map } from 'rxjs';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { LoaderService } from '../common/loader.service';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -16,8 +18,13 @@ import { filter, map } from 'rxjs';
 export class AppComponent implements OnInit{
   title = 'recruit-flow';
   isLoggedIn: boolean = false; // Set this based on login status
-
-  constructor(private storageService: StorageService) {}
+  private loaderService = inject(LoaderService);
+  isLoading = false;
+  constructor(private storageService: StorageService) {
+    this.loaderService.loaderState$.subscribe((isLoading) => {
+      this.isLoading = isLoading;
+    });
+  }
 
   ngOnInit() {
     // Subscribe to storage changes for the 'isLoggedIn' key

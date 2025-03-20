@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { StorageService } from '../common/storage.service'; // Import the service
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../common/auth.service';
+import { LoaderService } from '../common/loader.service';
 
 @Component({
   selector: 'app-login',
@@ -15,12 +16,12 @@ import { AuthService } from '../common/auth.service';
 export class LoginComponent {
   loginForm: FormGroup;
   errorMessage: string = '';
-
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private authService: AuthService,
-    private storageService: StorageService // Inject the service
+    private storageService: StorageService, // Inject the service
+    private loaderService: LoaderService
   ) {
     this.loginForm = this.fb.group({
       username: ['', [Validators.required]],
@@ -30,6 +31,7 @@ export class LoginComponent {
 
   onSubmit() {
     if (this.loginForm.valid) {
+      this.loaderService.showLoader();
       const username = this.loginForm.value.username;
       const password = this.loginForm.value.password;
       if (username !== '' && password !== '') {
@@ -38,17 +40,24 @@ export class LoginComponent {
         this.storageService.setItem('isLoggedIn', 'true'); // Use the service
         this.storageService.setItem('user_id', response.user.user_id); // Use the service
         this.router.navigate(['/add-requirement']);
+        this.loaderService.hideLoader();
           },
           error => {
+            
+        this.loaderService.hideLoader();
             console.error('Login failed', error);
             this.errorMessage = 'Invalid username or password';
             // Handle login error
           }
         );
       } else {
+        
+        this.loaderService.hideLoader();
         this.errorMessage = 'Invalid username or password';
       }
     } else {
+      
+      this.loaderService.hideLoader();
       this.errorMessage = 'Please fill out all fields correctly.';
     }
   }
