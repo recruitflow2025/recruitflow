@@ -6,9 +6,11 @@ const path = require('path');
 const multer = require('multer'); // For file uploads
 const fs = require('fs'); // For creating the uploads directory
 const pdf = require('pdf-parse'); // PDF text extraction
+const pdfParse = require('pdf-parse');
 const mammoth = require('mammoth'); // DOCX text extraction
 
 const app = express();
+app.use(express.json());
 const port = 3000;
 
 // Middleware
@@ -51,6 +53,24 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
+// Global variables to track the search state
+let currentSearchIndex = 0;  // To track where we left off in the file list
+
+// Function to extract text from a PDF
+async function extractTextFromPDF(filePath) {
+  const data = fs.readFileSync(filePath);
+  const pdf = await pdfParse(data);
+  return pdf.text;  // Return the text content of the PDF
+}
+
+// Function to extract text from a DOCX
+async function extractTextFromDOCX(filePath) {
+  const buffer = fs.readFileSync(filePath);
+  const result = await mammoth.extractRawText({ buffer });
+  return result.value;  // Return the text content of the DOCX
+}
+
+// Function to search within a file for the keywords
 async function searchInFile(filePath, keywords) {
   try {
     const fileExtension = path.extname(filePath).toLowerCase();
@@ -64,14 +84,12 @@ async function searchInFile(filePath, keywords) {
     if (fileExtension === '.docx') {
       fileText = await extractTextFromDOCX(filePath);
     }
-    if (fileExtension === '.doc') {
-      return false;
-    }
 
-    // Convert file text to lowercase for case-insensitive search
+    // If no valid text is extracted, return false
+    if (!fileText) return false;
+
+    // Convert file text and keywords to lowercase for case-insensitive search
     fileText = fileText.toLowerCase();
-
-    // Convert all keywords to lowercase and check if each keyword exists in the file text
     return keywords.every(keyword => fileText.includes(keyword.toLowerCase()));
   } catch (error) {
     console.error(`Error searching in file: ${filePath}`, error);
@@ -79,77 +97,60 @@ async function searchInFile(filePath, keywords) {
   }
 }
 
-async function extractTextFromPDF(filePath) {
-  const fs = require('fs');
-  const pdfParse = require('pdf-parse');
-  const data = fs.readFileSync(filePath);
-  const pdf = await pdfParse(data);
-  return pdf.text;  // Return the text content of the PDF
-}
-
-async function extractTextFromDOCX(filePath) {
-  const fs = require('fs');
-  const mammoth = require('mammoth');
-  const buffer = fs.readFileSync(filePath);
-  const result = await mammoth.extractRawText({ buffer });
-  return result.value;  // Return the text content of the DOCX
-}
-
+// Endpoint to handle file search with pagination
 app.post('/search-files', async (req, res) => {
   const { keywords, page = 1, pageSize = 10 } = req.body;
-  const keywordList = keywords ? keywords.split(',').map(keyword => keyword.trim()) : [];
 
-  if (keywordList.length === 0) {
+  // Ensure we have at least one keyword
+  if (!keywords || keywords.trim().length === 0) {
     return res.status(400).json({ message: 'At least one keyword is required' });
   }
 
+  const keywordList = keywords.split(',').map(keyword => keyword.trim());
   const uploadDir = './uploads';
   const files = fs.readdirSync(uploadDir);
+  const totalFiles = files.filter(file => fs.lstatSync(path.join(uploadDir, file)).isFile()).length;
 
+  // Calculate the range of files to process for the requested page
   const offset = (page - 1) * pageSize;
-  const foundFiles = [];
-  let filesFound = 0;
+  const endIndex = offset + pageSize;
 
-  // Loop through all files
-  for (let file of files) {
+  // We need to only process files from the current search index onwards
+  let matchedFiles = [];
+  
+  // Ensure we only start from the current search index (pagination logic)
+  for (let i = currentSearchIndex; i < files.length && matchedFiles.length < pageSize; i++) {
+    const file = files[i];
     const filePath = path.join(uploadDir, file);
-    const isFile = fs.lstatSync(filePath).isFile();
 
-    if (isFile && (filePath.endsWith('.pdf') || filePath.endsWith('.docx'))) {
-      // Check if the file contains all the keywords (case-insensitive)
+    // Check if it's a file (not a directory) and if it is either a PDF or DOCX
+    if (fs.lstatSync(filePath).isFile() && (filePath.endsWith('.pdf') || filePath.endsWith('.docx'))) {
       const found = await searchInFile(filePath, keywordList);
 
       if (found) {
-        foundFiles.push(filePath);
-        filesFound++;
+        matchedFiles.push(filePath);
       }
     }
 
-    if (filesFound >= pageSize) {
-      break;
-    }
+    // Update the search index for the next request
+    currentSearchIndex = i + 1;
   }
 
-  // Calculate total files found (before pagination)
-  const totalFiles = foundFiles.length;
+  // Pagination: Calculate total pages based on the total number of files
   const totalPages = Math.ceil(totalFiles / pageSize);
 
-  // Apply offset to the found files (pagination)
-  const paginatedFiles = foundFiles.slice(offset, offset + pageSize);
-
+  // Return matched files and pagination info
   res.json({
-    data: paginatedFiles,
+    data: matchedFiles,
     pagination: {
       page: parseInt(page),
       pageSize: parseInt(pageSize),
       total: totalFiles,
-      totalPages,
+      totalPages: totalPages,
     },
   });
 });
 
-
-// Login API
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
 
