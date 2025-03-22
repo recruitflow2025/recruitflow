@@ -18,6 +18,7 @@ import { LoaderService } from '../common/loader.service';
 })
 export class SkillSetSearchComponent {
   @ViewChild('resumeModal') resumeModal!: ElementRef;   
+  private lbaseUrl = 'http://localhost:3000';
   filterKeyword = '';
   submissions: any[] = [];
   selectedResumeHtml: string | null = null;
@@ -106,6 +107,10 @@ openModal(resumeUrl: string) {
   const modalElement = this.resumeModal.nativeElement;
   const modal = new bootstrap.Modal(modalElement);
   modal.show();
+}
+
+getFileUrl(filePath: string): string {
+  return `${this.lbaseUrl}/${filePath}`;
 }
 }
 
