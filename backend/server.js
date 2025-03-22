@@ -53,21 +53,30 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
-// Global variables to track the search state
-let currentSearchIndex = 0;  // To track where we left off in the file list
+let currentSearchIndex = 0;
 
 // Function to extract text from a PDF
 async function extractTextFromPDF(filePath) {
-  const data = fs.readFileSync(filePath);
-  const pdf = await pdfParse(data);
-  return pdf.text;  // Return the text content of the PDF
+  try {
+    const data = fs.readFileSync(filePath);
+    const pdf = await pdfParse(data);
+    return pdf.text;  // Return the text content of the PDF
+  } catch (error) {
+    console.error(`Error extracting text from PDF: ${filePath}`, error);
+    return '';
+  }
 }
 
 // Function to extract text from a DOCX
 async function extractTextFromDOCX(filePath) {
-  const buffer = fs.readFileSync(filePath);
-  const result = await mammoth.extractRawText({ buffer });
-  return result.value;  // Return the text content of the DOCX
+  try {
+    const buffer = fs.readFileSync(filePath);
+    const result = await mammoth.extractRawText({ buffer });
+    return result.value;  // Return the text content of the DOCX
+  } catch (error) {
+    console.error(`Error extracting text from DOCX: ${filePath}`, error);
+    return '';
+  }
 }
 
 // Function to search within a file for the keywords
@@ -86,7 +95,10 @@ async function searchInFile(filePath, keywords) {
     }
 
     // If no valid text is extracted, return false
-    if (!fileText) return false;
+    if (!fileText) {
+      console.log(`No text found in file: ${filePath}`);
+      return false;
+    }
 
     // Convert file text and keywords to lowercase for case-insensitive search
     fileText = fileText.toLowerCase();
@@ -106,6 +118,10 @@ app.post('/search-files', async (req, res) => {
     return res.status(400).json({ message: 'At least one keyword is required' });
   }
 
+  // Reset current search index for new search
+  currentSearchIndex = 0;
+
+  // Split keywords and process them
   const keywordList = keywords.split(',').map(keyword => keyword.trim());
   const uploadDir = './uploads';
   const files = fs.readdirSync(uploadDir);
@@ -117,7 +133,7 @@ app.post('/search-files', async (req, res) => {
 
   // We need to only process files from the current search index onwards
   let matchedFiles = [];
-  
+
   // Ensure we only start from the current search index (pagination logic)
   for (let i = currentSearchIndex; i < files.length && matchedFiles.length < pageSize; i++) {
     const file = files[i];
