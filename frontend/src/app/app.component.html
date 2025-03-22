@@ -5,6 +5,9 @@
     <app-side-menu *ngIf="isLoggedIn"></app-side-menu>
     <div class="content-area">
       <router-outlet></router-outlet>
+      <div *ngIf="isLoading" class="loader-overlay">
+        <div class="loader"></div>
+      </div>
     </div>
   </div>
   

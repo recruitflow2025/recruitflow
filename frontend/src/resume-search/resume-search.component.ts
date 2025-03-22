@@ -3,7 +3,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 import mammoth from 'mammoth';
-import { Observable } from 'rxjs';
+import { catchError, Observable, tap, throwError } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
@@ -18,23 +18,117 @@ import { LoaderService } from '../common/loader.service';
 })
 export class ResumeSearchComponent {
   @ViewChild('resumeModal') resumeModal!: ElementRef;  
+  private lbaseUrl = 'http://localhost:3000';
   filterKeyword = '';
   foundFiles: string[] = [];  // List of files from the backend
   selectedResumeHtml: string | null = null;
   selectedResumeUrl: any;
   isFiltered = false;
   keyword: string = '';
+  allResults: string[] = [];  // To cache all search results
   pagination = {
     page: 1,
     pageSize: 10,
     total: 0,
     totalPages: 0,
   };
+  loading = false;
 
-  private lbaseUrl = 'http://localhost:3000';
+  constructor(private http: HttpClient, private loaderService: LoaderService,private sanitizer: DomSanitizer) {}
 
-  constructor(private http: HttpClient, private sanitizer: DomSanitizer,private loaderService: LoaderService) {}
+  ngOnInit(): void {}
 
+  searchFiles(keywords: string, page: number = 1, pageSize: number = 10): Observable<any> {
+    // Show loader before making the HTTP request
+    this.loaderService.showLoader();
+  
+    // Make the HTTP request
+    return this.http.post<any>(`${this.lbaseUrl}/search-files`, { keywords, page, pageSize }).pipe(
+      // Add a tap operator to hide the loader once the response is successful
+      tap((response) => {
+        // Hide loader after receiving the response
+        this.loaderService.hideLoader();
+      }),
+      // Catch any errors, hide loader, and rethrow the error for further handling
+      catchError((error) => {
+        this.loaderService.hideLoader(); // Hide loader in case of error
+        return throwError(error); // Rethrow the error
+      })
+    );
+  }
+  
+
+  // Handle search operation
+  onSearch(): void {
+    if (this.keyword.trim()) {
+      // this.loaderService.showLoader();
+      this.loading = true;
+
+      // Clear previous results
+      this.allResults = [];
+
+      // Reset pagination for new search
+      this.pagination.page = 1;
+
+      // Start searching for the first 10 results
+      this.searchFiles(this.keyword, this.pagination.page, this.pagination.pageSize).subscribe(
+        (response) => {
+          this.foundFiles = response.data;
+          this.pagination.total = response.pagination.total;
+          this.pagination.totalPages = response.pagination.totalPages;
+          this.isFiltered = !!this.keyword;
+
+          this.allResults = this.allResults.concat(response.data);
+          this.loading = false;
+        },
+        (error) => {
+          this.loading = false;
+          console.error('Error during search:', error);
+        }
+      );
+    }
+  }
+
+  // Handle pagination for the next page
+  onNextPage(): void {
+    if (this.pagination.page < this.pagination.totalPages) {
+      this.pagination.page++;
+
+      // Check if the next set of results is already in cache
+      if (this.allResults.length >= this.pagination.page * this.pagination.pageSize) {
+        // Simply display the next chunk from the cache
+        this.foundFiles = this.allResults.slice(
+          (this.pagination.page - 1) * this.pagination.pageSize,
+          this.pagination.page * this.pagination.pageSize
+        );
+      } else {
+        // Fetch the next set of 10 files from the backend
+        this.searchFiles(this.keyword, this.pagination.page, this.pagination.pageSize).subscribe(
+          (response) => {
+            this.foundFiles = response.data;
+            // Cache the results
+            this.allResults = this.allResults.concat(response.data);
+          },
+          (error) => console.error('Error fetching next page:', error)
+        );
+      }
+    }
+  }
+
+  // Handle pagination for the previous page
+  onPreviousPage(): void {
+    if (this.pagination.page > 1) {
+      this.pagination.page--;
+
+      // Display the previous chunk from the cache
+      this.foundFiles = this.allResults.slice(
+        (this.pagination.page - 1) * this.pagination.pageSize,
+        this.pagination.page * this.pagination.pageSize
+      );
+    }
+  }
+
+  
   async viewResume(resumePath: string) {
     if (resumePath) {
       const fileUrl = `${this.lbaseUrl}/${resumePath}`;
@@ -57,38 +151,6 @@ export class ResumeSearchComponent {
       }
     } else {
       alert('No resume file found.');
-    }
-  }
-
-  // API call for file search with pagination
-  searchFiles(keywords: string, page: number = 1, pageSize: number = 10): Observable<any> {
-    return this.http.post<any>(`${this.lbaseUrl}/search-files`, { keywords, page, pageSize });
-  }
-
-  onSearch(): void {
-    if (this.keyword.trim()) {
-      this.loaderService.showLoader();
-      this.searchFiles(this.keyword, this.pagination.page, this.pagination.pageSize).subscribe(
-        (response) => {
-          this.foundFiles = response.data;
-          this.pagination.total = response.pagination.total;
-          this.pagination.totalPages = response.pagination.totalPages;
-          this.isFiltered = !!this.keyword;
-          this.loaderService.hideLoader();
-        },
-        (error) => {          
-          this.loaderService.hideLoader();
-          console.error('Error during search:', error);
-        }
-      );
-    }
-  }
-
-  // Method to handle pagination changes
-  onPageChange(page: number): void {
-    if (page >= 1 && page <= this.pagination.totalPages) {
-      this.pagination.page = page;
-      this.onSearch(); // Fetch files for the new page
     }
   }
 
