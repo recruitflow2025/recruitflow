@@ -1,3 +1,5 @@
+@import '../styles/shared.scss';
+
 /* Main container */
 .main-container {
   display: flex;
@@ -18,7 +20,7 @@
   background-color: var(--gray-100);
   padding: var(--space-xl);
   transition: var(--transition);
-  min-height: calc(100vh - 120px); /* Account for header and footer */
+  min-height: calc(100vh - 60px); /* Account for header height */
 }
 
 /* Component styling overrides */
@@ -43,7 +45,6 @@ app-footer {
   z-index: 990;
 }
 
-
 .loader-overlay {
   position: fixed;
   top: 0;
@@ -67,14 +68,14 @@ app-footer {
 }
 
 /* Responsive design */
-@media (max-width: 992px) {
+@include tablet {
   .content-area {
     margin-left: 0;
     padding: var(--space-lg);
   }
 }
 
-@media (max-width: 768px) {
+@include mobile {
   .content-area {
     padding: var(--space-md);
   }

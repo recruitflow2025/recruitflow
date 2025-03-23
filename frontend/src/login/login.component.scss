@@ -1,36 +1,41 @@
+@import '../styles/shared.scss';
+
 /* Login container */
 .login-container {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    width: 100%;
     background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-    padding: 20px;
-  }
-  
-  /* Login card */
-  .login-card {
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+/* Login card */
+.login-card {
     background: white;
-    padding: 40px;
+    padding: 2.5rem;
     border-radius: var(--border-radius-lg);
     box-shadow: var(--box-shadow-lg);
     width: 100%;
-    max-width: 420px;
+    max-width: 400px;
     text-align: center;
     transform: translateY(0);
     transition: var(--transition);
     
     &:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
     }
-  }
-  
-  /* Login logo */
-  .login-logo {
+}
+
+/* Login logo */
+.login-logo {
     width: 80px;
     height: 80px;
-    margin: 0 auto 20px;
+    margin: 0 auto 1.5rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -38,139 +43,150 @@
     background-color: var(--primary);
     color: white;
     font-size: 40px;
-  }
-  
-  /* Login title */
-  .login-title {
+}
+
+/* Login title */
+.login-title {
     font-size: 28px;
     font-weight: 700;
-    margin-bottom: 30px;
+    margin-bottom: 2rem;
     color: var(--secondary);
     position: relative;
     
     &::after {
-      content: "";
-      position: absolute;
-      bottom: -10px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 50px;
-      height: 3px;
-      background-color: var(--primary);
-      border-radius: 3px;
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 50px;
+        height: 3px;
+        background-color: var(--primary);
+        border-radius: 3px;
     }
-  }
-  
-  /* Form group */
-  .form-group {
-    margin-bottom: 25px;
+}
+
+/* Form group */
+.form-group {
+    margin-bottom: 1.25rem;
     text-align: left;
     position: relative;
-  }
-  
-  /* Input fields */
-  .form-group input {
+}
+
+/* Labels */
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--gray-700);
+}
+
+/* Input fields */
+.form-group input {
     width: 100%;
-    padding: 15px 15px 15px 40px;
+    padding: 0.75rem 0.75rem 0.75rem 2.5rem;
     border: 1px solid var(--gray-300);
     border-radius: var(--border-radius);
-    font-size: 16px;
+    font-size: 1rem;
     outline: none;
     transition: var(--transition);
     background-color: var(--gray-100);
-  }
-  
-  .form-group input:focus {
+}
+
+.form-group input:focus {
     border-color: var(--primary);
     box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
     background-color: white;
-  }
-  
-  /* Input icons */
-  .form-group::before {
+}
+
+/* Input icons */
+.form-group::before {
     font-family: 'Font Awesome 5 Free';
     font-weight: 900;
     position: absolute;
-    left: 15px;
-    top: 50%;
-    transform: translateY(-50%);
+    left: 0.9rem;
+    top: 2.4rem;
     color: var(--gray-600);
-    font-size: 16px;
-  }
-  
-  .form-group.username::before {
+    font-size: 1rem;
+}
+
+.form-group.username::before {
     content: "\f007"; /* User icon */
-  }
-  
-  .form-group.password::before {
+}
+
+.form-group.password::before {
     content: "\f023"; /* Lock icon */
-  }
-  
-  /* Login button */
-  .login-button {
+}
+
+/* Login button */
+.login-button {
     width: 100%;
-    padding: 15px;
-    background: var(--primary);
+    padding: 0.75rem;
+    background-color: var(--primary);
     color: white;
     border: none;
     border-radius: var(--border-radius);
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
     transition: var(--transition);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-  }
-  
-  .login-button:hover {
-    background: var(--primary-dark);
-    transform: translateY(-2px);
-  }
-  
-  .login-button::after {
-    content: "\f061"; /* Right arrow icon */
-    font-family: 'Font Awesome 5 Free';
-    font-weight: 900;
-  }
-  
-  /* Error message */
-  .error-message {
-    color: var(--danger);
-    font-size: 14px;
-    margin-top: 8px;
+    margin-top: 1rem;
+    
+    &:hover:not(:disabled) {
+        background-color: var(--primary-dark);
+        transform: translateY(-2px);
+    }
+    
+    &:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+}
+/* Error message */
+.error-message {
+    color: var(--accent);
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
     background-color: rgba(231, 76, 60, 0.1);
     border-radius: 5px;
-    padding: 8px;
+    padding: 0.5rem;
     text-align: center;
     animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
-  }
-  
-  @keyframes shake {
+}
+
+@keyframes shake {
     10%, 90% { transform: translate3d(-1px, 0, 0); }
     20%, 80% { transform: translate3d(2px, 0, 0); }
     30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
     40%, 60% { transform: translate3d(4px, 0, 0); }
-  }
-  
-  /* Responsive design */
-  @media (max-width: 480px) {
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
     .login-card {
-      padding: 30px 20px;
+        padding: 1.5rem 1.25rem;
+        max-width: 90%;
+        margin: 0 auto;
     }
-  
+
     .login-title {
-      font-size: 24px;
+        font-size: 24px;
+        margin-bottom: 1.5rem;
     }
-  
+
     .form-group input {
-      padding: 12px 12px 12px 35px;
-      font-size: 15px;
+        padding: 0.7rem 0.7rem 0.7rem 2.2rem;
+        font-size: 0.9375rem;
     }
-  
+
+    .form-group::before {
+        left: 0.8rem;
+        top: 2.3rem;
+        font-size: 0.9375rem;
+    }
+
     .login-button {
-      font-size: 16px;
-      padding: 12px;
+        font-size: 0.9375rem;
+        padding: 0.7rem;
     }
-  }
+}

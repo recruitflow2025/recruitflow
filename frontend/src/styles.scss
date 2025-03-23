@@ -1,3 +1,5 @@
+@import './styles/shared.scss';
+
 /* Global variables */
 :root {
   /* Color palette */
@@ -56,21 +58,17 @@ html {
 }
 
 body {
-  font-family: var(--font-sans);
-  color: var(--text);
-  background-color: var(--gray-100);
+  font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.6;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  color: #333;
+  background-color: var(--gray-100);
 }
 
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
-  font-weight: 600;
-  color: var(--secondary);
   margin-bottom: var(--space-md);
-  line-height: 1.2;
+  font-weight: 600;
+  line-height: 1.3;
 }
 
 h1 { font-size: 2.5rem; }
@@ -87,10 +85,9 @@ p {
 a {
   color: var(--primary);
   text-decoration: none;
-  transition: var(--transition);
   
   &:hover {
-    color: var(--primary-dark);
+    text-decoration: underline;
   }
 }
 
@@ -109,12 +106,6 @@ a {
   box-shadow: var(--box-shadow);
   padding: var(--space-lg);
   margin-bottom: var(--space-lg);
-  transition: var(--transition);
-  
-  &:hover {
-    box-shadow: var(--box-shadow-lg);
-    transform: translateY(-2px);
-  }
 }
 
 /* Form elements */
@@ -174,7 +165,7 @@ button {
 app-root {
   display: flex;
   flex-direction: column;
-  flex: 1;
+  min-height: 100vh;
 }
 
 /* Main container */
@@ -189,6 +180,7 @@ router-outlet + * {
   flex: 1;
   background-color: white;
   padding: 20px;
+  display: contents;
 }
 
 /* Global styles */
@@ -208,4 +200,26 @@ app-root {
   display: flex;
   flex-direction: column;
   flex: 1; /* Take up remaining space */
+}
+
+/* Table styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: var(--space-lg);
+  
+  th, td {
+    padding: var(--space-md);
+    text-align: left;
+    border-bottom: 1px solid var(--gray-300);
+  }
+  
+  th {
+    background-color: var(--gray-200);
+    font-weight: 600;
+  }
+  
+  tr:hover {
+    background-color: var(--gray-100);
+  }
 }

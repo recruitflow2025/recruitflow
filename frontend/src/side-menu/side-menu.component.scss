@@ -1,13 +1,18 @@
+@import '../styles/shared.scss';
+
 :host {
   display: block;
   width: 250px;
   background: linear-gradient(to bottom, var(--secondary), var(--primary-dark) 120%);
   color: white;
-  height: 100%;
   box-shadow: var(--box-shadow);
   transition: var(--transition);
   z-index: 990;
   overflow-y: auto;
+  position: fixed;
+  top: 60px; /* Match header height */
+  left: 0;
+  height: calc(100vh - 60px); /* Full height minus header */
 }
 
 /* Navigation container */
@@ -15,7 +20,7 @@ nav {
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 25px 0;
+  padding: 2px 0; /* Reduced from 5px to 2px */
 }
 
 /* App title/logo */
@@ -40,57 +45,56 @@ ul {
 }
 
 li {
-  margin-bottom: 5px;
+  margin-bottom: var(--space-xs);
   position: relative;
-}
-
-/* Active menu item */
-li.active-li {
-  background-color: rgba(255, 255, 255, 0.15);
-}
-
-li.active-li::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 3px;
-  background-color: var(--accent);
+  
+  &.active-li {
+    background-color: rgba(255, 255, 255, 0.15);
+    
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 3px;
+      background-color: var(--accent);
+    }
+  }
 }
 
 /* Menu links */
 a {
   display: flex;
   align-items: center;
-  padding: 14px 20px;
+  padding: 10px 15px;
   color: white;
   text-decoration: none;
   transition: var(--transition);
   font-weight: 500;
   letter-spacing: 0.3px;
   opacity: 0.85;
-}
-
-a:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  opacity: 1;
-}
-
-a.active {
-  opacity: 1;
-  font-weight: 600;
-}
-
-/* Icon placeholders */
-li a::before {
-  font-family: 'Font Awesome 5 Free';
-  font-weight: 900;
-  margin-right: 12px;
-  font-size: 16px;
-  width: 20px;
-  text-align: center;
-  display: inline-block;
+  
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    opacity: 1;
+  }
+  
+  &.active {
+    opacity: 1;
+    font-weight: 600;
+  }
+  
+  /* Icon placeholders */
+  &::before {
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    margin-right: 10px;
+    font-size: 16px;
+    width: 20px;
+    text-align: center;
+    display: inline-block;
+  }
 }
 
 /* Specific icons */
@@ -105,49 +109,52 @@ li:nth-child(2) a::before {
 /* Mobile toggle button */
 .sidebar-toggle {
   display: none;
-  position: fixed;
-  top: 70px;
-  left: 10px;
-  z-index: 1001;
-  background: var(--primary);
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  text-align: center;
-  line-height: 40px;
-  cursor: pointer;
-  box-shadow: var(--box-shadow-sm);
+  
+  @include tablet {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    bottom: var(--space-lg);
+    right: var(--space-lg);
+    width: 50px;
+    height: 50px;
+    background-color: var(--primary);
+    color: white;
+    border-radius: 50%;
+    box-shadow: var(--box-shadow-lg);
+    z-index: 1000;
+    cursor: pointer;
+    
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
 }
 
-/* Responsive design */
-@media (max-width: 992px) {
+/* Mobile responsive behavior */
+@include tablet {
   :host {
-    position: fixed;
-    top: 60px; /* Match header height */
-    left: -250px;
-    height: calc(100vh - 60px);
-    transition: left 0.3s ease;
-  }
-  
-  :host.open {
-    left: 0;
-  }
-  
-  .sidebar-toggle {
-    display: block;
+    transform: translateX(-100%);
+    
+    &.open {
+      transform: translateX(0);
+    }
   }
 }
 
 @media (max-width: 768px) {
-  nav::before {
-    font-size: 20px;
-    padding: 15px 0 20px;
+  :host {
+    top: 50px; /* Adjust for smaller header on mobile */
+    height: calc(100vh - 50px);
+  }
+  
+  nav {
+    padding: 2px 0; /* Consistent 2px padding */
   }
   
   a {
-    padding: 12px 15px;
+    padding: 8px 10px;
     font-size: 14px;
   }
   

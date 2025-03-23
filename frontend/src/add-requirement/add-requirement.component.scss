@@ -1,6 +1,6 @@
 /* Form container */
 form {
-  max-width: 650px;
+  max-width: 1000px;
   margin: 30px auto;
   padding: 35px 40px;
   background-color: white;
@@ -37,10 +37,22 @@ form {
   }
 }
 
-/* Form sections */
-.form-section {
+/* Grid layout for three columns */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
   margin-bottom: 25px;
-  padding: 15px;
+}
+
+/* Form field container */
+.form-field {
+  margin-bottom: 20px;
+}
+
+/* Full width fields */
+.full-width {
+  grid-column: 1 / -1;
 }
 
 /* Form labels */
@@ -145,7 +157,7 @@ textarea.ng-invalid.ng-touched {
   color: var(--danger);
   font-size: 12px;
   margin-top: 5px;
-  margin-bottom: 15px;
+  margin-bottom: 5px;
   animation: fadeIn 0.3s ease;
   display: block;
 }
@@ -181,10 +193,17 @@ button[type="submit"] {
 }
 
 /* Responsive design */
+@media (max-width: 900px) {
+  .form-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 768px) {
   form {
     padding: 25px 20px;
     margin: 20px 15px;
+    max-width: 100%;
   }
   
   .form-title {
@@ -212,6 +231,10 @@ button[type="submit"] {
 }
 
 @media (max-width: 480px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  
   form {
     padding: 20px 15px;
   }
@@ -229,10 +252,6 @@ button[type="submit"] {
   textarea {
     padding: 10px 12px;
     font-size: 14px;
-  }
-  
-  .form-section {
-    padding: 15px;
   }
   
   button[type="submit"] {

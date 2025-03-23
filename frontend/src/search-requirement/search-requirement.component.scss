@@ -1,3 +1,5 @@
+@import '../styles/shared.scss';
+
 .search-requirement-container {
     max-width: 1000px;
     margin: 30px auto;
@@ -12,10 +14,10 @@
   h2 {
     text-align: center;
     color: var(--secondary);
-    margin-bottom: 25px;
+    margin-bottom: 15px;
     font-weight: 600;
     position: relative;
-    padding-bottom: 15px;
+    padding-bottom: 10px;
     
     &::after {
       content: "";
@@ -34,7 +36,7 @@
     display: flex;
     list-style-type: none;
     padding: 0;
-    margin: 0 0 30px 0;
+    margin: 0 0 15px 0;
     border-radius: var(--border-radius);
     overflow: hidden;
     box-shadow: var(--box-shadow-sm);
@@ -48,7 +50,7 @@
   
   .tab a {
     display: block;
-    padding: 15px;
+    padding: 10px;
     color: var(--secondary);
     font-weight: 500;
     border-bottom: 3px solid transparent;
@@ -71,10 +73,10 @@
   .tab a.active::after {
     content: "";
     position: absolute;
-    bottom: -15px;
+    bottom: -10px;
     left: 50%;
     transform: translateX(-50%);
-    border-width: 10px 10px 0;
+    border-width: 8px 8px 0;
     border-style: solid;
     border-color: var(--primary) transparent transparent;
   }
@@ -90,28 +92,21 @@
   /* Responsive design */
   @media (max-width: 768px) {
     .search-requirement-container {
-      padding: 20px 15px;
-      margin: 20px 15px;
-      width: auto;
+      margin: 2px;
+      padding: 10px;
+    }
+    
+    h2 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
     }
     
     .tabs {
-      flex-direction: column;
-      border-radius: var(--border-radius);
+      margin-bottom: 10px;
     }
   
     .tab a {
-      padding: 12px;
-      border-bottom: none;
-      border-left: 3px solid transparent;
-    }
-  
-    .tab a.active {
-      border-bottom: none;
-      border-left: 3px solid var(--primary-dark);
-      
-      &::after {
-        display: none;
-      }
+      padding: 8px;
+      font-size: 14px;
     }
   }

@@ -1,8 +1,12 @@
+@import '../styles/shared.scss';
+
 /* Header container */
 :host {
   display: block;
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 1000;
   width: 100%;
 }
@@ -13,28 +17,17 @@ header {
   align-items: center;
   background: linear-gradient(to right, var(--secondary), var(--primary-dark));
   color: white;
-  padding: 15px 25px;
+  padding: 0 var(--space-lg);
   box-shadow: var(--box-shadow);
   position: relative;
-  height: 60px; /* This height should match the calculations in app.component.scss */
+  height: 60px;
 }
 
 /* Logo section */
 .logo {
-  display: flex;
-  align-items: center;
-  z-index: 2;
-}
-
-.logo img {
-  height: 35px;
-  margin-right: 12px;
-  transition: var(--transition);
-  border-radius: 50%;
-}
-
-.logo:hover img {
-  transform: scale(1.05);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
 /* Page title */
@@ -54,14 +47,12 @@ h1 {
 .user-info {
   display: flex;
   align-items: center;
-  z-index: 2;
 }
 
 .username {
-  margin-right: 15px;
+  margin-right: var(--space-md);
   font-size: 16px;
   font-weight: 500;
-  letter-spacing: 0.3px;
 }
 
 /* Logout button */
@@ -77,11 +68,11 @@ button {
   display: flex;
   align-items: center;
   gap: 8px;
-}
-
-button:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+  }
 }
 
 button::before {
@@ -91,11 +82,13 @@ button::before {
 }
 
 /* Responsive design */
-@media (max-width: 992px) {
+@include tablet {
   header {
-    padding: 12px 20px;
+    padding: var(--space-sm) var(--space-md);
   }
-  
+}
+
+@media (max-width: 992px) {
   h1 {
     font-size: 20px;
   }

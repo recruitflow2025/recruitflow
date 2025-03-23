@@ -1,74 +1,89 @@
 <form [formGroup]="requirementForm" (ngSubmit)="onSubmit()">
   <h2 class="form-title">Add New Requirement</h2>
-  <!-- First Name -->
-  <label for="firstName">First Name:</label>
-  <input id="firstName" formControlName="firstName" required>
-  <div *ngIf="requirementForm.get('firstName')?.invalid && requirementForm.get('firstName')?.touched"
-       class="error-message">
-    First Name is required.
+  
+  <div class="form-grid">
+    <!-- First Name -->
+    <div class="form-field">
+      <label for="firstName">First Name:</label>
+      <input id="firstName" formControlName="firstName" required>
+      <div *ngIf="requirementForm.get('firstName')?.invalid && requirementForm.get('firstName')?.touched"
+           class="error-message">
+        First Name is required.
+      </div>
+    </div>
+
+    <!-- Middle Name -->
+    <div class="form-field">
+      <label for="middleName">Middle Name:</label>
+      <input id="middleName" formControlName="middleName">
+    </div>
+
+    <!-- Last Name -->
+    <div class="form-field">
+      <label for="lastName">Last Name:</label>
+      <input id="lastName" formControlName="lastName" required>
+      <div *ngIf="requirementForm.get('lastName')?.invalid && requirementForm.get('lastName')?.touched"
+           class="error-message">
+        Last Name is required.
+      </div>
+    </div>
+
+    <!-- Email -->
+    <div class="form-field">
+      <label for="email">Email:</label>
+      <input id="email" formControlName="email" type="email" required>
+      <div *ngIf="requirementForm.get('email')?.invalid && requirementForm.get('email')?.touched"
+           class="error-message">
+        Please enter a valid email address.
+      </div>
+    </div>
+
+    <!-- Phone -->
+    <div class="form-field">
+      <label for="phone">Phone:</label>
+      <input id="phone" formControlName="phone" required>
+      <div *ngIf="requirementForm.get('phone')?.invalid && requirementForm.get('phone')?.touched"
+           class="error-message">
+        Phone is required.
+      </div>
+    </div>
+
+    <!-- Skill Set -->
+    <div class="form-field">
+      <label for="skillSet">Skill Set:</label>
+      <input id="skillSet" formControlName="skillSet" required>
+      <div *ngIf="requirementForm.get('skillSet')?.invalid && requirementForm.get('skillSet')?.touched"
+           class="error-message">
+        Skill Set is required.
+      </div>
+    </div>
   </div>
 
-  <!-- Last Name -->
-  <label for="lastName">Last Name:</label>
-  <input id="lastName" formControlName="lastName" required>
-  <div *ngIf="requirementForm.get('lastName')?.invalid && requirementForm.get('lastName')?.touched"
-       class="error-message">
-    Last Name is required.
+  <!-- Description - Full Width -->
+  <div class="form-field full-width">
+    <label for="description">Description:</label>
+    <textarea id="description" formControlName="description" required></textarea>
+    <div *ngIf="requirementForm.get('description')?.invalid && requirementForm.get('description')?.touched"
+         class="error-message">
+      Description is required.
+    </div>
   </div>
 
-  <!-- Middle Name -->
-  <label for="middleName">Middle Name:</label>
-  <input id="middleName" formControlName="middleName" required>
-  <div *ngIf="requirementForm.get('middleName')?.invalid && requirementForm.get('middleName')?.touched"
-       class="error-message">
-    Middle Name is required.
-  </div>
-
-  <!-- Email -->
-  <label for="email">Email:</label>
-  <input id="email" formControlName="email" type="email" required>
-  <div *ngIf="requirementForm.get('email')?.invalid && requirementForm.get('email')?.touched"
-       class="error-message">
-    Please enter a valid email address.
-  </div>
-
-  <!-- Phone -->
-  <label for="phone">Phone:</label>
-  <input id="phone" formControlName="phone" required>
-  <div *ngIf="requirementForm.get('phone')?.invalid && requirementForm.get('phone')?.touched"
-       class="error-message">
-    Phone is required.
-  </div>
-
-  <!-- Description -->
-  <label for="description">Description:</label>
-  <textarea id="description" formControlName="description" required></textarea>
-  <div *ngIf="requirementForm.get('description')?.invalid && requirementForm.get('description')?.touched"
-       class="error-message">
-    Description is required.
-  </div>
-
-  <!-- Skill Set -->
-  <label for="skillSet">Skill Set:</label>
-  <input id="skillSet" formControlName="skillSet" required>
-  <div *ngIf="requirementForm.get('skillSet')?.invalid && requirementForm.get('skillSet')?.touched"
-       class="error-message">
-    Skill Set is required.
-  </div>
-
-  <!-- Resume Upload -->
-  <label for="resume">Resume Upload:</label>
-  <input
-    id="resume"
-    type="file"
-    (change)="onFileChange($event)"
-    accept=".pdf,.docx"
-    required
-  >
-  <div *ngIf="requirementForm.get('resume')?.invalid && requirementForm.get('resume')?.touched"
-       class="error-message">
-    <span *ngIf="requirementForm.get('resume')?.errors?.['required']">Resume is required.</span>
-    <span *ngIf="requirementForm.get('resume')?.errors?.['invalidFileType']">Only PDF and DOCX files are allowed.</span>
+  <!-- Resume Upload - Full Width -->
+  <div class="form-field full-width">
+    <label for="resume">Resume Upload:</label>
+    <input
+      id="resume"
+      type="file"
+      (change)="onFileChange($event)"
+      accept=".pdf,.docx"
+      required
+    >
+    <div *ngIf="requirementForm.get('resume')?.invalid && requirementForm.get('resume')?.touched"
+         class="error-message">
+      <span *ngIf="requirementForm.get('resume')?.errors?.['required']">Resume is required.</span>
+      <span *ngIf="requirementForm.get('resume')?.errors?.['invalidFileType']">Only PDF and DOCX files are allowed.</span>
+    </div>
   </div>
 
   <!-- Submit Button -->
