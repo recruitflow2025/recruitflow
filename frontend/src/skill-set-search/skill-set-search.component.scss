@@ -1,24 +1,25 @@
 .tab-content {
     padding: 30px;
     position: relative;
-    z-index: 10; /* Lower z-index than sidebar */
   }
   
-  h3 {
+  h1, h2, h3, h4, h5, h6 {
     color: var(--secondary);
     margin-bottom: 20px;
     position: relative;
     display: inline-block;
     
     &::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      bottom: -5px;
-      width: 40px;
-      height: 3px;
-      background-color: var(--primary);
-      border-radius: 3px;
+      content: none !important; /* Completely prevent the underline */
+      display: none !important; /* Double protection */
+    }
+  }
+  
+  /* Additional selector to target any heading with underline */
+  [class*="heading"], [class*="title"], .tab-content h3 {
+    &::after {
+      content: none !important;
+      display: none !important;
     }
   }
   
@@ -112,6 +113,7 @@
   
   table td {
     border-bottom: 1px solid var(--gray-200);
+    vertical-align: middle;
   }
   
   /* Actions column */
@@ -121,28 +123,40 @@
     justify-content: center;
   }
   
-  /* View icon */
-  .view-icon {
-    width: 34px;
-    height: 34px;
+  /* New icon container styling */
+  .icon-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: flex-start;
+  }
+  
+  /* View and download icons styling */
+  .fa-eye, .fa-download {
+    color: var(--primary);
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 14px;
+    width: 24px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: rgba(52, 152, 219, 0.1);
+  }
+  
+  .fa-eye:hover, .fa-download:hover {
+    color: white;
+    background-color: var(--primary);
+    transform: scale(1.1);
+  }
+  
+  a[download] {
+    text-decoration: none;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: rgba(52, 152, 219, 0.1);
-    color: var(--primary);
-    border-radius: 6px;
-    cursor: pointer;
-    transition: var(--transition);
-    
-    &:hover {
-      background-color: var(--primary);
-      color: white;
-      transform: translateY(-2px);
-    }
-  }
-  
-  .fa-eye {
-    font-size: 16px;
   }
   
   /* Empty state */
@@ -163,13 +177,14 @@
     }
   }
   
-  /* Pagination */
+  /* Improved pagination styling */
   .pagination {
     margin-top: 30px;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
+    padding: 10px 0;
   }
   
   .pagination button {
@@ -183,12 +198,16 @@
     color: var(--gray-700);
     border-radius: var(--border-radius-sm);
     font-size: 14px;
-    transition: var(--transition);
+    font-weight: 500;
+    transition: all 0.2s ease;
+    padding: 0 15px;
     
     &:hover:not(:disabled) {
       background-color: var(--primary);
       border-color: var(--primary);
       color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
     
     &:disabled {
@@ -196,12 +215,16 @@
       color: var(--gray-400);
       cursor: not-allowed;
     }
-    
-    &.active {
-      background-color: var(--primary);
-      border-color: var(--primary);
-      color: white;
-    }
+  }
+  
+  .pagination span {
+    color: var(--gray-700);
+    font-size: 14px;
+    padding: 0 10px;
+    background-color: var(--gray-100);
+    border-radius: var(--border-radius-sm);
+    padding: 8px 12px;
+    white-space: nowrap;
   }
   
   /* Responsive design */
@@ -241,4 +264,95 @@
     .tab-content {
       padding: 30px;
     }
+  }
+
+  /* Modal styles - updated for better scrolling */
+  .resume-modal {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    z-index: 9999 !important; /* Even higher z-index */
+    display: none;
+    overflow-x: hidden !important;
+    overflow-y: auto !important; /* Allow vertical scrolling */
+    outline: 0;
+    
+    &.show {
+      display: block !important;
+    }
+  }
+
+  .modal-backdrop {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    z-index: 9998 !important;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+  }
+
+  .modal-dialog {
+    position: relative;
+    width: auto;
+    margin: 1.75rem auto;
+    max-width: 800px !important;
+    z-index: 9999 !important;
+    pointer-events: auto !important; /* Ensure clicks work */
+    
+    @media (min-width: 992px) {
+      max-width: 80% !important;
+    }
+  }
+
+  .modal-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background-color: #fff;
+    border-radius: 0.3rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.5) !important;
+    outline: 0;
+    max-height: 90vh !important; /* Limit height to 90% of viewport */
+    overflow: hidden !important; /* Hide overflow */
+  }
+
+  .modal-body {
+    position: relative;
+    flex: 1 1 auto;
+    padding: 1rem;
+    overflow-y: auto !important; /* Allow scrolling in the body */
+    max-height: calc(90vh - 120px) !important; /* Account for header/footer */
+    
+    iframe {
+      width: 100% !important;
+      height: 100% !important;
+      min-height: 60vh !important;
+      border: none;
+    }
+    
+    div[innerHTML] {
+      width: 100% !important;
+      height: auto !important;
+      min-height: 60vh !important;
+      overflow-y: auto !important;
+    }
+  }
+
+  /* Ensure buttons in modal are clickable */
+  .modal-header button,
+  .modal-footer button {
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    position: relative !important;
+    z-index: 10000 !important;
+  }
+
+  /* Fix for body scrolling */
+  body.modal-open {
+    overflow: hidden !important;
+    padding-right: 0 !important; /* Prevent layout shift */
   }

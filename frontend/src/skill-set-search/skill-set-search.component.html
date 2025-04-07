@@ -14,7 +14,7 @@
         <th>Phone</th>
         <th>Description</th>
         <th>Skillset</th>
-        <th>Resume Path</th>
+        <th>Action</th>
       </tr>
     </thead>
     <tbody>
@@ -25,52 +25,54 @@
         <td>{{ submission.phone_number }}</td>
         <td>{{ submission.description }}</td>
         <td>{{ submission.skillset }}</td>
-        <!-- <td  (click)="viewResume(submission.resume)"><i class="fas fa-eye"></i></td> -->
-        <td style="display: flex;gap:5px">
-          <i class="fas fa-eye" (click)="viewResume(submission.resume)"></i>
-          <a [href]="getFileUrl(submission.resume)" download target="_blank">
-            <i class="fas fa-download"></i>
-          </a>
+        <td>
+          <div class="icon-container">
+            <i class="fas fa-eye" (click)="viewResume(submission.resume)"></i>
+            <a [href]="getFileUrl(submission.resume)" download target="_blank">
+              <i class="fas fa-download"></i>
+            </a>
+          </div>
         </td>
-        <!-- <td>{{ submission.resume }}</td> -->
       </tr>
     </tbody>
   </table>
 
   <p *ngIf="submissions.length === 0 && isFiltered">No results found.</p>
 
-  <div #resumeModal class="modal fade" id="resumeModal" tabindex="-1" aria-labelledby="resumeModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="resumeModalLabel">Resume</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <!-- PDF Viewer or iframe for DOCX -->
-          <div *ngIf="selectedResumeUrl && selectedResumeUrl.endsWith('.pdf')">  
-            <iframe
-              [src]="getSafeUrl(selectedResumeUrl)"
-              width="100%"
-              height="400px"
-            ></iframe>
-          </div>
-        
-          <!-- DOCX Renderer -->
-          <div *ngIf="selectedResumeHtml" style="width: 100%; height: 400px; overflow-y: auto;">
-            <div [innerHTML]="selectedResumeHtml"></div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        </div>
-      </div>  
+  <!-- Always show pagination controls -->
+  <div class="pagination" *ngIf="submissions.length > 0">
+    <button (click)="onPreviousPage()" [disabled]="pagination.page === 1">Previous</button>
+    <span>Page {{ pagination.page }} of {{ pagination.totalPages || 1 }} ({{ pagination.total }} results)</span>
+    <button (click)="onNextPage()" [disabled]="pagination.page === pagination.totalPages || pagination.totalPages === 0">Next</button>
+  </div>
+</div>
+
+<!-- Modal moved outside the main container -->
+<div #resumeModal class="modal fade resume-modal" id="resumeModal" tabindex="-1" aria-labelledby="resumeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="resumeModalLabel">Resume</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-    </div>
-  <!-- Pagination Controls -->
-  <div *ngIf="pagination.totalPages > 1" class="pagination">
-    <button (click)="onPageChange(pagination.page - 1)" [disabled]="pagination.page === 1">Previous</button>
-    <span>Page {{ pagination.page }} of {{ pagination.totalPages }}</span>
-    <button (click)="onPageChange(pagination.page + 1)" [disabled]="pagination.page === pagination.totalPages">Next</button>
+      <div class="modal-body">
+        <!-- PDF Viewer -->
+        <div *ngIf="selectedResumeUrl && selectedResumeUrl.endsWith('.pdf')">  
+          <iframe
+            [src]="getSafeUrl(selectedResumeUrl)"
+            width="100%"
+            height="600px"
+          ></iframe>
+        </div>
+      
+        <!-- DOCX Renderer -->
+        <div *ngIf="selectedResumeHtml" class="docx-content">
+          <div [innerHTML]="selectedResumeHtml"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
+      </div>
+    </div>  
   </div>
 </div>
